@@ -1,7 +1,7 @@
 from operator import mod
 from django.db import models
 
-
+import datetime
 # Create your models here.
 
 
@@ -40,3 +40,14 @@ class product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class order(models.Model):
+    product = models.ForeignKey(product, on_delete=models.CASCADE)
+    customer = models.ForeignKey(register_info, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    price = models.IntegerField()
+    address = models.CharField(max_length=50, default="", blank=True)
+    phone = models.IntegerField()
+    date = models.DateField(default=datetime.datetime.today)
+    status = models.BooleanField(default=False)

@@ -1,19 +1,26 @@
-function myFunction() {
-    var input, filter, ul, li, a, i, txtValue;
-    input = document.getElementById("myInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myul");
+function validateform() {
+    x = document.forms["myform"]["email"].value;
+    if (x == "") {
+        document.getElementById('email').placeholder = "enter your email";
+        document.getElementById('email').style.border = "2px solid red";
+        var x = document.getElementById('valid');
+        x.innerHTML = "*enter your email";
+        x.style.color = "red";
 
-    li = ul.getElementsByTagName("td");
+        return false;
 
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("a")[0];
-
-        txtValue = a.textContent || a.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-        }
     }
+}
+
+function crElement() {
+    x = document.getElementsByClassName("myname");
+    console.log(x);
+    x[0].innerHTML = "heeyyyyyyy";
+    x = document.createElement("input");
+    z = document.createElement("label");
+    x.setAttribute("class", "myname");
+    y = document.getElementById("mydiv");
+    y.appendChild(x);
+    y.appendChild(z);
+
 }

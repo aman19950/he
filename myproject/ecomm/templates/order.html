@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% load cart %}
+{% block content %}
+
+ <div class ="container">
+        <h1>Order Details:</h1>
+        <div class="border rounded p-4 m-4">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>SNo.</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        {% comment %} <th>Price</th> {% endcomment %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ord_dtl in ord_dtls  %}
+                    <tr>
+                        <td >{{forloop.counter}}</td>
+                        <td><img src="{{ord_dtl.product.image.url}}" alt="" width=100 height =100></td>
+                        <td>{{ord_dtl.product.name}}</td>
+                        <td>{{ord_dtl.date}}</td>
+                        <td>{{ord_dtl.price|currency}}</td>
+                        <td>{{ord_dtl.quantity}}</td>
+                        <td>{{ord_dtl.quantity|multiplyprice:ord_dtl.price|currency}}</td>
+                        {% if ord_dtl.status %}
+                       
+                        <td>  <span class="badge bg-success">Completed</span></td>
+                        {% else %}
+                        <td> <small class = "badge bg-warning">pending</small></td>
+                        {% endif %}
+                     
+                        
+                    </tr>
+                   {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr align = "center">
+                        <th colspan =5 >Total Pay</th>
+                        <th>{{tp|currency}}</th>
+                        <th>
+                           
+                        </th>
+                    </tr>
+                    <tr>
+                        
+                    </tr>
+                </tfoot>
+             
+            </table>
+            <div id="paypal-button-container" style ="float:right"></div>
+            
+        </div>
+        
+    </div>
+
+    <!-- Include the PayPal JavaScript SDK; replace "test" with your own sandbox Business account app client ID -->
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AY5BdptvuWA8sYwrCgTBRKS2e4VIHQmO8DVBNbef4FXxpsft-jGSlBy1W_xdB-LTEzjBtr0zKaDdappT&currency=USD"></script>
+
+
+    <!-- Set up a container element for the button -->
+
+    
+
+
+    <script>
+
+      paypal.Buttons({
+        style: {
+
+    layout:  'vertical',
+
+    color:   'blue',
+
+    shape:   'rect',
+
+    label:   'paypal',
+
+    width:'100px',
+    align:'center'
+
+  },
+
+        // Sets up the transaction when a payment button is clicked
+
+        createOrder: function(data, actions) {
+
+          return actions.order.create({
+
+            purchase_units: [{
+
+              amount: {
+
+                value: '{{tp}}' // Can reference variables or functions. Example: `value: document.getElementById('...').value`
+
+              }
+
+            }]
+
+          });
+
+        },
+
+
+        // Finalize the transaction after payer approval
+
+        onApprove: function(data, actions) {
+
+          return actions.order.capture().then(function(orderData) {
+
+            // Successful capture! For dev/demo purposes:
+
+                console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+
+                var transaction = orderData.purchase_units[0].payments.captures[0];
+
+                alert('Transaction '+ transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+
+
+            // When ready to go live, remove the alert and show a success message within this page. For example:
+
+            // var element = document.getElementById('paypal-button-container');
+
+            // element.innerHTML = '';
+
+            // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+
+            // Or go to another URL:  actions.redirect('thank_you.html');
+
+          });
+
+        }
+
+      }).render('#paypal-button-container');
+
+
+    </script>
+
+
+
+{% endblock content %}

@@ -5,23 +5,17 @@ from traceback import print_tb
 from unicodedata import category
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from sqlalchemy import null
 from sympy import Product, re
-from tenacity import retry
-from validators import email
+from middlewares.auth import auth_middleware
 
 from django.contrib.auth.hashers import make_password, check_password
 
 # Create your views here.
-from .models import register_info, product, Category
+from .models import register_info, product, Category, order
 
 
 def index(request):
-
-    x = make_password('1234')
-    print(x)
-
-    print(check_password(
-        '1234', 'pbkdf2_sha256$216000$Nw26i6wEpIRo$q00jvZ+9sLuwTmOwWVa8ahPFI/YMEZBe7bcyExKSECg='))
 
     # try:
     #     if request.session['email']:
@@ -33,6 +27,7 @@ def index(request):
     #     return render(request, 'home.html')
     # path = upload_image.objects.all()
     products = None
+
     # request.session.clear()
     if request.method == "POST":
         product_id = request.POST.get('cartid')
@@ -55,13 +50,13 @@ def index(request):
         else:
             cartid = {}
             cartid[product_id] = 1
+
         request.session['cart'] = cartid
-        print(request.session['cart'])
-        return redirect('home')
+
+    # print("-----------", len(request.session['cart']))
 
     cat = Category.objects.all()
     cat_id = request.GET.get('category')
-    print(cat_id)
 
     if cat_id:
         products = product.objects.filter(category_id=cat_id)
@@ -166,6 +161,7 @@ def login_info(request):
                 flag = check_password(password, fetch_email.password)
                 if flag:
                     request.session['email'] = fetch_email.email
+                    request.session['customer_id'] = fetch_email.id
                     request.session['firstname'] = fetch_email.firstname
                     return redirect('home')
                 else:
@@ -184,5 +180,43 @@ def logout(request):
     return redirect('home')
 
 
-def sc(request):
-    return render(request,'sc.html')
+def cart(request):
+    # print("len---------",len(request.session.get('cart')))
+    ids = list(request.session.get('cart').keys())
+
+    cart_pro = product.objects.filter(id__in=ids)
+    return render(request, 'cart.html', {'cart_pro': cart_pro})
+
+
+def checkout(request):
+
+    if request.method == "POST":
+        address = request.POST.get("address")
+        mobile = request.POST.get("mobile")
+        customer_id = request.session.get('customer_id')
+        cart = request.session.get('cart')
+        products = product.objects.filter(id__in=list(cart.keys()))
+
+        for pro in products:
+            save_order_dtls = order(
+                customer=register_info(id=customer_id),
+                product=pro,
+                price=pro.price,
+                quantity=cart.get(str(pro.id)),
+                address=address,
+                phone=mobile)
+            # print(address,mobile,cart,customer_id,products)
+            save_order_dtls.save()
+        request.session['cart'] = {}
+
+        return redirect('cart')
+
+
+def order_dtl(request):
+
+    customer = request.session.get('customer_id')
+    ord_Dtls = order.objects.filter(customer=customer).order_by('-date')
+    tp = 0
+    for i in ord_Dtls:
+        tp = tp+(i.price * i.quantity)
+    return render(request, 'order.html', {'ord_dtls': ord_Dtls, 'tp': tp})
