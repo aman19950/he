@@ -1,12 +1,7 @@
 
-from math import prod
-from tkinter.messagebox import NO
-from traceback import print_tb
-from unicodedata import category
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from sqlalchemy import null
-from sympy import Product, re
+
 from middlewares.auth import auth_middleware
 
 from django.contrib.auth.hashers import make_password, check_password
