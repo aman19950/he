@@ -25,7 +25,7 @@ SECRET_KEY = 'v&18$ffc+xe0*2uad^uv7o=jjjcyfrkn_%gj@a^)a5@286fy(%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'demoecomproj.herokuapp.com/']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -81,9 +81,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'NAME': 'ecommdb_new',
-        'USER': 'root',
-        'PASSWORD': "",
-        'HOST': 'localhost'
+        'USER': 'aman1995',
+        'PASSWORD': "amankumar@123",
+        'HOST': 'aman1995.mysql.pythonanywhere-services.com'
 
     }
 }
