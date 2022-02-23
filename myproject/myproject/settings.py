@@ -80,7 +80,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': 'ecommdb_new',
+        'NAME': 'aman1995$ecommdb_new',
         'USER': 'aman1995',
         'PASSWORD': "amankumar@123",
         'HOST': 'aman1995.mysql.pythonanywhere-services.com'
