@@ -82,7 +82,7 @@ DATABASES = {
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'NAME': 'ecommdb_new',
         'USER': 'aman1995',
-        'PASSWORD': "",
+        'PASSWORD': "amankumar@123",
         'HOST': 'aman1995.mysql.pythonanywhere-services.com'
 
     }
